@@ -4,7 +4,7 @@
   "description": "An example project for development team candidates that involves searching for a business.",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf ./dist/js",
+    "clean": "del ./dist/js",
     "build": "./node_modules/.bin/webpack",
     "serve": "./node_modules/.bin/serve ./dist --port=8080",
     "watch": "./node_modules/.bin/webpack --progress --watch",
