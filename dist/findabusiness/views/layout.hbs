@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset='UTF8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <title>{{ title }}</title>
+    <!--Import Google Icon Font-->
+    <link href='http://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css"  media="screen,projection">
+    <link rel='stylesheet' href='/stylesheets/style.css'>
   </head>
   <body>
-    {{{body}}}
+    <nav>
+      <div class='nav-wrapper blue-grey darken-4'>
+        <a href='#' class='brand-logo right'>Find A Business</a>
+      </div>
+    </nav>
+    <div class='container'>
+      {{{ body }}}
+    </div>
+    <footer class='page-footer cyan darken-4'>
+      <div class='container'>
+        <div class='row'>
+          <div class='col l6 s12'>
+            <h5 class='white-text'>About this Project</h5>
+            <p class='grey-text text-lighten-4'>Build an application that allows a user to search for their business. The user should be required to provide a zip code and business name to submit a search.</p>
+            <p class='grey-text text-lighten-4'>On search, identify the business, and then display to the user a set of information related to that business</p>
+          </div>
+        </div>
+      </div>
+      <div class='footer-copyright'>
+        <div class='container'>
+        © 2017 Placeholder Copyright Text
+        </div>
+      </div>
+    </footer>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
   </body>
 </html>
