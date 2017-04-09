@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.17.1",
+    "clarifai": "^2.1.3-dev",
     "cookie-parser": "^1.4.3",
     "debug": "^2.6.3",
     "express": "^4.15.2",
