@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset='UTF8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+    <meta charset="UTF8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{{ title }}</title>
     <!--Import Google Icon Font-->
-    <link href='http://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css"  media="screen,projection">
-    <link rel='stylesheet' href='/stylesheets/style.css'>
+    <link rel="stylesheet" href="/stylesheets/style.css">
   </head>
   <body>
     <nav>
-      <div class='nav-wrapper blue-grey darken-4'>
-        <a href='#' class='brand-logo right'>Find A Business</a>
+      <div class="nav-wrapper blue-grey darken-"'>
+        <a href="#" class="brand-logo right">Find A Business</a>
       </div>
     </nav>
-    <div class='container'>
+    <div class="container">
       {{{ body }}}
     </div>
-    <footer class='page-footer cyan darken-4'>
-      <div class='container'>
-        <div class='row'>
-          <div class='col l6 s12'>
-            <h5 class='white-text'>About this Project</h5>
-            <p class='grey-text text-lighten-4'>Build an application that allows a user to search for their business. The user should be required to provide a zip code and business name to submit a search.</p>
-            <p class='grey-text text-lighten-4'>On search, identify the business, and then display to the user a set of information related to that business</p>
+    <footer class="page-footer cyan darken-4">
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">About this Project</h5>
+            <p class="grey-text text-lighten-4">Build an application that allows a user to search for their business. The user should be required to provide a zip code and business name to submit a search.</p>
+            <p class="grey-text text-lighten-4">On search, identify the business, and then display to the user a set of information related to that business</p>
           </div>
         </div>
       </div>
-      <div class='footer-copyright'>
-        <div class='container'>
+      <div class="footer-copyright">
+        <div class="container">
         © 2017 Placeholder Copyright Text
         </div>
       </div>
@@ -38,5 +38,70 @@
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfmjsT-RvKxn7in_6OEkfFdNlFWqoV73s&libraries=places"></script>
+    <script>
+    /*********************************************************/
+    /* TODO: Move these scripts to an external scripts files */
+    /*********************************************************/
+
+      /*Assign form fields as constants*/
+      const FORM = document.getElementById('searchQueryForm');
+      const BUSINESS = document.getElementById('businessField');
+      const POSTALCODE = document.getElementById('postalCodeField');
+
+      /*Assign Google API Constants*/
+      const MAPDIV = document.createElement('div');
+      const MAP = new google.maps.Map(MAPDIV);
+      const SERVICE = new google.maps.places.PlacesService(MAP);
+
+      /*Assign HTTP Request Object for POST requests as constant*/
+      const XHR = new XMLHttpRequest();
+
+      /*Event Listener for Client Side Form Processing, 'submit' form data to Google Places Text Search*/
+      FORM.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        let searchQuery = POSTALCODE.value+' '+BUSINESS.value;
+        SERVICE.textSearch({query: searchQuery}, getBusinessDetails);
+      });
+
+      /*Query the Google Places Library for Business Details*/
+      function getBusinessDetails(places,status){
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          for (let i=0; i<places.length; i++) {
+            let place = places[i];
+            SERVICE.getDetails({
+              placeId: place.place_id
+            }, postBusinessDetails);
+          }
+        }
+      }
+
+      /*Post business details to the server for further processing*/
+      function postBusinessDetails(place,status){
+        if(status === google.maps.places.PlacesServiceStatus.OK){
+            let photos = [];
+            /*fill array with photo links returned from google photo request*/
+            console.log(place.photos); /* TODO: Find why details isn't returning photo_references*/
+            /*Open a request to POST to 'index'*/
+            XHR.open('POST','/', true);
+            /*Request header must be set to application/JSON*/
+            XHR.setRequestHeader('Content-Type','application/json');
+            /*Stringify and Send the processed Business details and Photos*/
+            XHR.send(JSON.stringify({
+              'name':place.name,
+              'formatted_address':place.formatted_address,
+              'website':place.website,
+              'formatted_phone_number':place.formatted_phone_number,
+              'types':place.types,
+              'photos':photos
+            }));
+            XHR.onreadystatechange = ()=>{
+              if (XHR.readyState === 4 && XHR.status === 200) {
+                console.log(XHR.responseText);
+              }
+            }
+          }
+        }
+    </script>
   </body>
 </html>
