@@ -112,9 +112,9 @@
         place = JSON.parse(place);
         let resultCard = '<div class="col s12 m6" id="interface">';
         resultCard+='<div class="card medium hoverable">';
-        if(place.photos){
+        if(place.photos.imgURL){
           /* TODO: Impliment image car on card, tabs will be dynamically created. Need images first. :'( */
-          resultCard+='<div class="card-image"><img src="'+place.photos[0]+'"></div>';
+          resultCard+='<div class="card-image"><img src="'+place.photos.imgURL+'"></div>';
         }
         resultCard+='<div class="card-content">';
         resultCard+='<span class="card-title activator grey-text text-darken-4">'+place.name+'<i class="material-icons right">more_vert</i></span>';
@@ -127,6 +127,9 @@
         resultCard+='<p>'+place.formatted_phone_number+'</br>';
         resultCard+=place.formatted_address+'</br>';
         resultCard+=place.website+'</br>';
+        for(let x = 0; x<place.photos.tags.length; x++){
+          resultCard+= '<div class="chip">'+place.photos.tags[x].name+'</div>';
+        }
         resultCard+='</div>';
         /* TODO: Would be cool to reassign the orignal card but populate with business name and zip code on a try again button. Have Restart and Try again as card actions.*/
         resultCard+='<div class="card-action"><a href="/">Start Over?</a></div>';
