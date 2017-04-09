@@ -57,6 +57,9 @@
       /*Assign HTTP Request Object for POST requests as constant*/
       const XHR = new XMLHttpRequest();
 
+      /*Assign interface card constanr for update on successful response*/
+      const INTERFACECARD = document.getElementById('interface');
+
       /*Event Listener for Client Side Form Processing, 'submit' form data to Google Places Text Search*/
       FORM.addEventListener('submit',(e)=>{
         e.preventDefault();
@@ -79,29 +82,59 @@
       /*Post business details to the server for further processing*/
       function postBusinessDetails(place,status){
         if(status === google.maps.places.PlacesServiceStatus.OK){
-            let photos = [];
-            /*fill array with photo links returned from google photo request*/
-            console.log(place.photos); /* TODO: Find why details isn't returning photo_references*/
-            /*Open a request to POST to 'index'*/
-            XHR.open('POST','/', true);
-            /*Request header must be set to application/JSON*/
-            XHR.setRequestHeader('Content-Type','application/json');
-            /*Stringify and Send the processed Business details and Photos*/
-            XHR.send(JSON.stringify({
-              'name':place.name,
-              'formatted_address':place.formatted_address,
-              'website':place.website,
-              'formatted_phone_number':place.formatted_phone_number,
-              'types':place.types,
-              'photos':photos
-            }));
-            XHR.onreadystatechange = ()=>{
-              if (XHR.readyState === 4 && XHR.status === 200) {
-                console.log(XHR.responseText);
-              }
+          let photos = [];
+          /*fill array with photo links returned from google photo request*/
+          console.log(place.photos);
+          /* TODO: Find why details isn't returning photo_references*/
+          /*Open a request to POST to 'index'*/
+          XHR.open('POST','/', true);
+          /*Request header must be set to application/JSON*/
+          XHR.setRequestHeader('Content-Type','application/json');
+          /*Stringify and Send the processed Business details and Photos*/
+          XHR.send(JSON.stringify({
+            'name':place.name,
+            'formatted_address':place.formatted_address,
+            'website':place.website,
+            'formatted_phone_number':place.formatted_phone_number,
+            'types':place.types,
+            'photos':photos
+          }));
+          XHR.onreadystatechange = ()=>{
+            if (XHR.readyState === 4 && XHR.status === 200) {
+              console.log(XHR.responseText);
+              INTERFACECARD.outerHTML=buildResultCard(XHR.responseText);
             }
           }
         }
+      }
+
+      function buildResultCard(place){
+        place = JSON.parse(place);
+        let resultCard = '<div class="col s12 m6" id="interface">';
+        resultCard+='<div class="card medium hoverable">';
+        if(place.photos){
+          /* TODO: Impliment image car on card, tabs will be dynamically created. Need images first. :'( */
+          resultCard+='<div class="card-image"><img src="'+place.photos[0]+'"></div>';
+        }
+        resultCard+='<div class="card-content">';
+        resultCard+='<span class="card-title activator grey-text text-darken-4">'+place.name+'<i class="material-icons right">more_vert</i></span>';
+        for(var i = 0; i<place.types.length;i++){
+          resultCard+= '<div class="chip">'+place.types[i]+'</div>';
+        }
+        resultCard+='</div>';
+        resultCard+='<div class="card-reveal">';
+        resultCard+='<span class="card-title grey-text text-darken-4">'+place.name+'<i class="material-icons right">close</i></span>';
+        resultCard+='<p>'+place.formatted_phone_number+'</br>';
+        resultCard+=place.formatted_address+'</br>';
+        resultCard+=place.website+'</br>';
+        resultCard+='</div>';
+        /* TODO: Would be cool to reassign the orignal card but populate with business name and zip code on a try again button. Have Restart and Try again as card actions.*/
+        resultCard+='<div class="card-action"><a href="/">Start Over?</a></div>';
+        resultCard+='</div>';
+        resultCard+='</div>';
+        console.log(resultCard);
+        return resultCard;
+      }
     </script>
   </body>
 </html>
