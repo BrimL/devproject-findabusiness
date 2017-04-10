@@ -15,12 +15,13 @@ router.get('/',(req, res, next)=>{
 /*POST home page.*/
 router.post('/',(req, res, next)=>{
   try{
-    /*Insert object field validation*/
-    let imgURL = 'http://lorempixel.com/100/190/nature/6';
-
+    let place = req.body
     /*Promise to build a response based on valid fields and Clarifai results*/
-    Promise.all([validateFields(req.body),app.models.predict(Clarifai.GENERAL_MODEL, imgURL)]).
-    then(buildResult(values),
+    Promise.all([validateFields(place),app.models.predict(Clarifai.GENERAL_MODEL,place.photos[0])])
+    .then(buildResult)
+    .then((value)=>{
+      res.send(value);
+    },
     function(err) {
       console.log(err);
     });
@@ -31,6 +32,7 @@ router.post('/',(req, res, next)=>{
 });
 
 /* TODO: Move this to a controller module*/
+/* TODO: Add validatefor post requests*/
 function validateFields(place){
   console.log(place.name);
   console.log(place.formatted_address);
@@ -46,12 +48,14 @@ function buildResult(values){
   let imgData = values[1];
   let tags = imgData.outputs[0].data.concepts;
 
-  place.photos = {
-    'imgURL':'http://lorempixel.com/100/190/nature/6',
-    'tags':tags
-  };
+  for(let i = 0; i<place.photos.length;i++){
+    place.photos[i] = {
+      'imgURL':place.photos[i],
+      'tags':tags
+    };
+  }
   console.log(place);
-  res.send(place);
+  return place;
 }
 
 module.exports = router;
