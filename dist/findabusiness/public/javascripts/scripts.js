@@ -1,6 +1,3 @@
-/*********************************************************/
-/* TODO: Move these scripts to an external scripts files */
-/*********************************************************/
 /*Assign form fields as constants*/
 const FORM = document.getElementById('searchQueryForm');
 const BUSINESS = document.getElementById('businessField');
@@ -71,6 +68,9 @@ function postBusinessDetails(place,status){
     XHR.onreadystatechange = ()=>{
       if (XHR.readyState === 4 && XHR.status === 200) {
         INTERFACECARD.outerHTML=buildResultCard(XHR.responseText);
+        $('.carousel.carousel-slider').carousel({
+          fullWidth: true
+        });
       }
     }
   }
@@ -78,32 +78,37 @@ function postBusinessDetails(place,status){
 
 function buildResultCard(place){
   place = JSON.parse(place);
-  let resultCard = '<div class="col s12 m6" id="interface scale-transition">';
+  let resultCard = '<div class="col s12 m6" id="interface">';
   resultCard+='<div class="card large hoverable">';
   if(place.photos[0].imgURL){
-    /* TODO: Impliment image car on card, tabs will be dynamically created. Need images first. :'( */
-    resultCard+='<div class="card-image"><img src="'+place.photos[0].imgURL+'"></div>';
+    resultCard+='<div class="card-image carousel carousel-slider center" id="resultCarousel" data-indicators="true" style="height:300px;">';
+    for(let i = 0; i<place.photos.length; i++){
+      resultCard+='<div class="carousel-item" href="#'+i+'!">';
+      resultCard+='<h6>Image Tags:</h6>';
+      for(let x = 0; x<place.photos[i].tags.length && x<5; x++){
+        resultCard+= '<div class="chip">'+place.photos[i].tags[x].name+'</div>';
+      }
+      resultCard+='<img src="'+place.photos[i].imgURL+'">';
+      resultCard+='</div>';
+    }
+    resultCard+='</div>';
   }
   resultCard+='<div class="card-content">';
   resultCard+='<span class="card-title activator grey-text text-darken-4">'+place.name+'<i class="material-icons right">more_vert</i></span>';
+
   resultCard+='</div>';
   resultCard+='<div class="card-reveal">';
-  resultCard+='<span class="card-title grey-text text-darken-4">'+place.name+'<i class="material-icons right">close</i></span>';
-  resultCard+='<h5>Business Details</h5>'
+  resultCard+='<h4><span class="card-title grey-text text-darken-4">'+place.name+'<i class="material-icons right">close</i></span></h4></br>';
+  resultCard+='<h5>Business Details:</h5>'
   resultCard+='<p><i class="tiny material-icons">business</i>\t'+place.formatted_address+'</br>';
   resultCard+='<i class="tiny material-icons">phone</i>\t'+place.formatted_phone_number+'</br>';
   resultCard+='<a href="'+place.website+'" target="_blank"><i class="tiny material-icons">web</i>\t'+place.website+'</a></br></p>';
-  resultCard+='<h5>Image Tags</h5>'
-  for(let x = 0; x<place.photos[0].tags.length; x++){
-    resultCard+= '<div class="chip">'+place.photos[0].tags[x].name+'</div>';
-  }
-  resultCard+='</div>';
-  resultCard+='<div class="card-action"><a href="/">Start Over?</a>';
+  resultCard+='<div class="card-action">';
+  resultCard+='<h5>Classifications:</5></br>';
   for(var i = 0; i<place.types.length;i++){
     resultCard+= '<div class="chip">'+place.types[i]+'</div>';
   }
-  resultCard+='</div>';
-  resultCard+='</div>';
-  resultCard+='</div>';
+  resultCard+='</div></div>';
+  resultCard+='<div class="card-action"><a href="/">Start Over?</a></div></div></div>';
   return resultCard;
 }
