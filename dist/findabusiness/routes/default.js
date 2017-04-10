@@ -16,6 +16,13 @@ router.get('/',(req, res, next)=>{
 router.post('/',(req, res, next)=>{
   try{
     let place = req.body
+
+    /*create promise array to get all promises*/
+    let promiseFunctions =[validateFields];
+    for(let i = 0; i<place.photos.length; i++){
+      promiseFunctions[i+1]=app.models.predict;
+    }
+
     /*Promise to build a response based on valid fields and Clarifai results*/
     Promise.all([validateFields(place),app.models.predict(Clarifai.GENERAL_MODEL,place.photos[0])])
     .then(buildResult)
@@ -25,13 +32,29 @@ router.post('/',(req, res, next)=>{
     function(err) {
       console.log(err);
     });
+    // Promise.all(promiseFunctions)
+    // .then(responses=>{
+    //   console.log(responses);
+    //   buildResult(responses);
+    // })
+    // .then(value=>{
+    //   res.send(value);
+    // },
+    // function(err) {
+    //   console.log(err);
+    // });
+
+    // promiseFunctions[0](place);
+    // for(let i = 1; i<promiseFunctions.length; i++){
+    //   promiseFunctions[i](Clarifai.GENERAL_MODEL,place.photos[i-1]);
+    // }
   }
   catch(err){
     console.log(err);
   }
 });
 
-/* TODO: Move this to a controller module*/
+/* TODO: Move these functions to a controller module*/
 /* TODO: Add validatefor post requests*/
 function validateFields(place){
   console.log(place.name);
@@ -46,6 +69,8 @@ function buildResult(values){
   console.log(values);
   let place = values[0];
   let imgData = values[1];
+
+  console.log(place);
   let tags = imgData.outputs[0].data.concepts;
 
   for(let i = 0; i<place.photos.length;i++){
