@@ -1,15 +1,16 @@
 <div class="col s12 m6" id="interface">
-  <div class="card medium horizontal hoverable">
+  <div class="card large horizontal hoverable">
     <div class="card-image">
-      <img src="http://lorempixel.com/100/190/nature/6">
+      <img src="http://lorempixel.com/g/400/1000/abstract">
     </div>
     <div class="card-stacked">
       <div class="card-content">
         <div class="row">
+          <class="card-title grey-text text-darken-4"><h5>Enter a Business and Postal code:</h5></div>
           <form class="col s12" id="searchQueryForm" action="/" method="post">
             <div class="row">
               <div class="input-field col s12">
-                <input placeholder="Waymark" id="businessField" type="text" class="validate" required></textarea>
+                <input placeholder="Waymark" id="businessField" type="text" class="validate" required autofocus></textarea>
                 <label for="businessField">Business</label>
               </div>
             </div>
@@ -18,8 +19,8 @@
                 <input placeholder="48226" id="postalCodeField" type="tel" class="validate" maxlength="5" required>
                 <label for="postalCodeField">Postal Code</label>
               </div>
-              <div class="input-field col s12 m6">
-                <button class="btn waves-effect waves-light" type="submit"  id="searchQueryFormSubmit"><i class="material-icons right">send</i>
+              <div class="input-field col s12 m6 center-align">
+                <button class="btn waves-effect waves-light center" type="submit"  id="searchQueryFormSubmit"><i class="material-icons right">send</i>
                   Submit
                 </button>
               </div>
